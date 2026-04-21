@@ -14,6 +14,7 @@ import { cn } from "@/src/utils/tailwind";
 import { memo } from "react";
 import { useRouter } from "next/router";
 import { PeekTableStateProvider } from "@/src/components/table/peek/contexts/PeekTableStateContext";
+import { Skeleton } from "@/src/components/ui/skeleton";
 
 type PeekViewItemType = Extract<
   LangfuseItemType,
@@ -78,6 +79,7 @@ type TablePeekViewProps = Pick<
   | "peekEventOptions"
 > & {
   title?: string;
+  isLoading?: boolean;
   // Content
   /**
    * The content to display in the peek view.
@@ -87,7 +89,7 @@ type TablePeekViewProps = Pick<
 
 function TablePeekViewComponent(props: TablePeekViewProps) {
   const peekView = props;
-  const { title, children } = props;
+  const { title, children, isLoading } = props;
   const router = useRouter();
   const eventHandler = createPeekEventHandler(peekView.peekEventOptions);
   const itemId = router.query.peek as string | undefined;
@@ -119,7 +121,11 @@ function TablePeekViewComponent(props: TablePeekViewProps) {
               className="truncate text-sm font-medium focus:outline-hidden"
               tabIndex={0}
             >
-              {title ?? itemId}
+              {isLoading ? (
+                <Skeleton className="h-4 w-32" />
+              ) : (
+                (title ?? itemId)
+              )}
             </span>
           </SheetTitle>
           <div
